@@ -48,9 +48,9 @@ function diff(node,vAppOld,vAppNew,idx){
 	}
 	else if(typeof vAppNew === "string")
 	{
-		if()
-		let newNode = render(vAppNew);
-
+		//if()
+		let newNode = nodeChecker(vAppNew);
+		node.replaceWith(newNode);
 	}	
 	else if(vAppOld.tagName !== vAppNew.tagName){
 			let newNode = render(vAppNew);
@@ -66,6 +66,7 @@ function diff(node,vAppOld,vAppNew,idx){
 			diff(node.childNodes[index],oldvElement,vAppNew.children[index]?vAppNew.children[index]:null,index)
 		})
 	}
+	return node;
 }
 
 const vApp = function(count){
@@ -76,10 +77,11 @@ const vApp = function(count){
 	children:[
 		'HELLO WORLD',
 		String(count),
+		createElement("input"),
 		createElement("img",{
 			attrs:{
-				//src : "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
-				src : "./rainbows.gif",
+				src : "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
+				//src : "./rainbows.gif",
 				id : "myimg"
 			}
 		})
@@ -87,7 +89,7 @@ const vApp = function(count){
 })
 }
 
-let vAppOld = vApp(6);
+let vAppOld = vApp(0);
 let renderedElement = render(vAppOld);
 
 console.log("vAppOld : ")
@@ -97,16 +99,18 @@ console.log(renderedElement);
 
 let app = document.getElementById("app");
 console.log(app);
-
-var count = 1;
+let count = 1;
+let vAppNew = vApp(count);
+mount(renderedElement,document.getElementById("app"));
 setInterval(function(){
-	var vAppNew = vApp(count);
+	count += 1;
+	vAppNew = vApp(count);
 	//console.log("vAppNew : ")
 	//console.log(vAppNew);
 	//var patch = diff(vAppOld,vAppNew)
 	//renderedElement = patch(renderedElement);
 	//console.log(patch);
-	mount(render(vAppNew),document.getElementById("app"));
+	diff(renderedElement,vAppOld,vAppNew,0)
+	console.log(renderedElement);
 	vAppOld = vAppNew;
-	count += 1;
 },3000);
