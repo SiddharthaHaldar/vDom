@@ -30,22 +30,41 @@ function mount(node,target){
 	return node;
 }
 
-function diffchildren(vAppOldChildren,vAppNewChildren){
-	let 
-}
+// function diffchildren(vAppOldChildren,vAppNewChildren){
+// 	let 
+// }
 
-function diff(node,vAppOld,vAppNew){
-	if(vAppOld.tagName !== vAppNew.tagName){
-		return node =>
-		{	
+function diff(node,vAppOld,vAppNew,idx){
+	if(vAppOld === null)
+	{
+		let newNode = render(vAppNew);
+		if(node.parentNode)
+			node.parentNode.appendChild(newNode);
+	}
+	else if(vAppNew === null)
+	{
+		if(node.parentNode)
+			node.parentNode.removeChild(node.childNodes[idx]);
+	}
+	else if(typeof vAppNew === "string")
+	{
+		if()
+		let newNode = render(vAppNew);
+
+	}	
+	else if(vAppOld.tagName !== vAppNew.tagName){
 			let newNode = render(vAppNew);
 			node.replaceWith(newNode);
-			return node;
-		}
 	}
-	else if(vAppOld.children.length <= vAppNew.children.length){
-		
-
+	else if(vAppOld.children.length <= vAppNew.children.length){ 
+		vAppNew.children.forEach((newvElement,index)=>{
+			diff(node.childNodes[index],vAppOld.children[index]?vAppOld.children[index]:null,newvElement,index)
+		})
+	}
+	else if(vAppOld.children.length > vAppNew.children.length){
+		vAppOld.children.forEach((oldvElement,index)=>{
+			diff(node.childNodes[index],oldvElement,vAppNew.children[index]?vAppNew.children[index]:null,index)
+		})
 	}
 }
 
@@ -59,7 +78,8 @@ const vApp = function(count){
 		String(count),
 		createElement("img",{
 			attrs:{
-				src : "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
+				//src : "https://media.giphy.com/media/cuPm4p4pClZVC/giphy.gif",
+				src : "./rainbows.gif",
 				id : "myimg"
 			}
 		})
@@ -83,12 +103,10 @@ setInterval(function(){
 	var vAppNew = vApp(count);
 	//console.log("vAppNew : ")
 	//console.log(vAppNew);
-	var patch = diff(vAppOld,vAppNew)
-	renderedElement = patch(renderedElement);
+	//var patch = diff(vAppOld,vAppNew)
+	//renderedElement = patch(renderedElement);
 	//console.log(patch);
-	//mount(render(vAppNew),document.getElementById("app"));
+	mount(render(vAppNew),document.getElementById("app"));
 	vAppOld = vAppNew;
 	count += 1;
-},2000);
-
-//mount(renderedElement,document.getElementById("app"));
+},3000);
